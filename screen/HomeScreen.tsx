@@ -24,7 +24,6 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Real-time listener for Firestore
     const unsubscribe = onSnapshot(collection(db, "todos"), (snapshot) => {
       const todosList = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -34,10 +33,9 @@ const HomeScreen = () => {
       setLoading(false);
     });
 
-    return () => unsubscribe(); // Cleanup listener on component unmount
+    return () => unsubscribe();
   }, []);
 
-  // Toggle todo completion
   const toggleTodo = async (id: string, completed: boolean) => {
     try {
       await updateDoc(doc(db, "todos", id), { completed: !completed });
@@ -46,7 +44,6 @@ const HomeScreen = () => {
     }
   };
 
-  // delete todo
   const deleteTodo = async (id: string) => {
     Alert.alert("Delete Gatividhi", "Are you sure to delete this Gatividhi?", [
       { text: "Cancel", style: "cancel" },
@@ -56,7 +53,6 @@ const HomeScreen = () => {
         onPress: async () => {
           try {
             await deleteDoc(doc(db, "todos", id));
-            Alert.alert("Success", "Gatividhi delete successfully.");
           } catch (error) {
             Alert.alert("Error", "Something went wrong!");
             console.log("[ERROR] ", error);
@@ -66,22 +62,21 @@ const HomeScreen = () => {
     ]);
   };
 
-  // Render each todo item
   const renderTodo = ({ item }: { item: any }) => (
     <TouchableOpacity
       onLongPress={() => deleteTodo(item.id)}
       activeOpacity={0.7}
+      style={styles.todoItem}
     >
-      <View style={styles.todoItem}>
-        <Checkbox
-          status={item.completed ? "checked" : "unchecked"}
-          onPress={() => toggleTodo(item.id, item.completed)}
-          color="#000000"
-        />
-        <Text style={[styles.todoText, item.completed && styles.completedText]}>
-          {item.title}
-        </Text>
-      </View>
+      <Checkbox
+        status={item.completed ? "checked" : "unchecked"}
+        onPress={() => toggleTodo(item.id, item.completed)}
+        color="#000000"
+        uncheckedColor="#000000"
+      />
+      <Text style={[styles.todoText, item.completed && styles.completedText]}>
+        {item.title}
+      </Text>
     </TouchableOpacity>
   );
 
@@ -103,8 +98,8 @@ const HomeScreen = () => {
       )}
 
       <Link asChild href="/todos">
-        <TouchableOpacity activeOpacity={0.7} style={styles.createTodoBtn}>
-          <Text style={styles.btnText}>Create Gatividhi</Text>
+        <TouchableOpacity activeOpacity={0.8} style={styles.createTodoBtn}>
+          <Text style={styles.btnText}>Add New Gatividhi</Text>
         </TouchableOpacity>
       </Link>
     </View>
@@ -114,41 +109,41 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F7F9FC",
+    backgroundColor: "#FFFFFF",
     padding: 20,
   },
   header: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
+    color: "#000000",
+    marginBottom: 20,
     textAlign: "center",
   },
   todoItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#F0F0F0",
     padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
+    borderRadius: 12,
+    marginBottom: 15,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
     elevation: 2,
   },
   todoText: {
-    fontSize: 16,
+    fontSize: 18,
     color: "#000000",
-    flex: 1, // Takes up remaining space
+    flex: 1,
   },
   completedText: {
     textDecorationLine: "line-through",
-    color: "#aaa",
+    color: "#777777",
   },
   emptyText: {
     fontSize: 16,
-    color: "#aaa",
+    color: "#777777",
     textAlign: "center",
     marginTop: 20,
   },
@@ -156,8 +151,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#000000",
     padding: 15,
     alignItems: "center",
-    borderRadius: 20,
+    borderRadius: 25,
     marginTop: 20,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 2,
   },
   btnText: {
     color: "#FFFFFF",

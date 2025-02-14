@@ -9,8 +9,23 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { Provider as PaperProvider, TextInput } from "react-native-paper";
+import {
+  Provider as PaperProvider,
+  TextInput,
+  DefaultTheme,
+} from "react-native-paper";
 import { db } from "../firebaseConfig";
+
+// Custom Paper theme to enforce light mode
+const lightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: "#000000", // Black for focus underline
+    background: "#FFFFFF", // White background for TextInput
+    placeholder: "#777777", // Grey placeholder
+  },
+};
 
 const AddTodoScreen = () => {
   const [title, setTitle] = useState("");
@@ -32,32 +47,27 @@ const AddTodoScreen = () => {
   };
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={lightTheme}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-        <Text style={styles.text}>Add Gatividhi</Text>
+        <Text style={styles.header}>Add Gatividhi</Text>
         <TextInput
           label="Gatividhi"
           mode="outlined"
-          placeholder="Enter Gatividhi"
+          placeholder="Enter your Gatividhi"
           value={title}
           onChangeText={(text) => setTitle(text)}
-          theme={{
-            colors: {
-              primary: "#ffffff",
-              placeholder: "#000000",
-              text: "#000000",
-            },
-          }}
+          style={styles.input}
+          theme={lightTheme} // Enforcing light theme specifically for the TextInput
         />
         <TouchableOpacity
           activeOpacity={0.7}
           style={styles.createTodoBtn}
           onPress={addTodo}
         >
-          <Text style={styles.btnText}>Create ToDo</Text>
+          <Text style={styles.btnText}>Create Gatividhi</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
     </PaperProvider>
@@ -69,24 +79,35 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#f7f7f7",
+    backgroundColor: "#FFFFFF", // Enforcing white background for the screen
   },
-  text: {
-    fontSize: 24,
+  header: {
+    fontSize: 28,
     fontWeight: "bold",
+    color: "#000000", // Black text
     textAlign: "center",
+    marginBottom: 30,
+  },
+  input: {
     marginBottom: 20,
+    backgroundColor: "#FFFFFF", // White input background
+    color: "#000000", // Black text inside input
   },
   createTodoBtn: {
-    backgroundColor: "#000000",
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: "#000000", // Black button
+    paddingVertical: 15,
+    borderRadius: 25,
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 10,
+    shadowColor: "#000000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 2,
   },
   btnText: {
-    color: "#fff",
-    fontSize: 16,
+    color: "#FFFFFF", // White text on the button
+    fontSize: 18,
     fontWeight: "bold",
   },
 });
